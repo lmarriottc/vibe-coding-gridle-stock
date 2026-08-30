@@ -1,10 +1,74 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-  </head>
-  <body>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Shared sales and shapewear inventory tracker.">
+  <title>FormaStock | Sales & Inventory</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#"><span class="brand-mark">F</span>FormaStock</a>
+    <div class="header-actions"><span class="sync-status" id="syncStatus"><i></i>Local demo</span><button class="settings-button" id="settingsButton" type="button">Sheet settings</button></div>
+  </header>
+  <main>
+    <section class="page-heading">
+      <div><p class="eyebrow">Operations dashboard</p><h1>Inventory under control.</h1><p>Record every movement and know what is available right now.</p></div><span id="currentDate"></span>
+    </section>
+    <nav class="tabs" role="tablist" aria-label="Application sections">
+      <button class="tab active" id="dashboardTab" role="tab" aria-selected="true" aria-controls="dashboardPanel" data-panel="dashboardPanel" type="button">Dashboard</button>
+      <button class="tab" id="movementsTab" role="tab" aria-selected="false" aria-controls="movementsPanel" data-panel="movementsPanel" type="button">New Movements</button>
+      <button class="tab" id="stockTab" role="tab" aria-selected="false" aria-controls="stockPanel" data-panel="stockPanel" type="button">Current Stock</button>
+    </nav>
+
+    <section class="tab-panel" id="dashboardPanel" role="tabpanel" aria-labelledby="dashboardTab">
+      <div class="metrics" aria-label="Sales and inventory summary">
+        <article class="metric primary"><span>Available units</span><strong id="totalStock">0</strong><small id="referenceCount"></small></article>
+        <article class="metric"><span>Sales today · quantity</span><strong id="todaySales">0</strong><small id="todayMovements"></small></article>
+        <article class="metric"><span>Sales today · dollars</span><strong id="todaySalesAmount">$0.00</strong><small>Gross sales value</small></article>
+      </div>
+      <div class="charts-grid">
+        <section class="panel chart-panel" aria-labelledby="monthlyChartTitle">
+          <div class="chart-heading"><div><p class="eyebrow">Monthly trend</p><h2 id="monthlyChartTitle">Sales units and dollars</h2></div><div class="chart-legend"><span><i class="legend-units"></i>Units</span><span><i class="legend-dollars"></i>USD</span></div></div>
+          <div class="dual-axis-chart"><span class="axis-title left">Units</span><div class="chart-plot" id="monthlySalesChart"></div><span class="axis-title right">USD</span></div>
+        </section>
+        <section class="panel chart-panel" aria-labelledby="sizeChartTitle">
+          <div class="chart-heading"><div><p class="eyebrow">Sales mix</p><h2 id="sizeChartTitle">Units sold and stock by size</h2></div><div class="chart-legend"><span><i class="legend-front"></i>Front</span><span><i class="legend-lateral"></i>Lateral</span><span><i class="legend-stock"></i>Stock</span></div></div>
+          <div class="chart-plot" id="sizeSalesChart"></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="movementsPanel" role="tabpanel" aria-labelledby="movementsTab" hidden>
+      <div class="movements-layout">
+        <section class="panel movement-panel">
+          <div class="panel-heading"><div><p class="eyebrow">New movement</p><h2>Update inventory</h2></div></div>
+          <div class="segmented" role="group" aria-label="Movement type"><button class="segment active" data-type="sale" type="button">Record sale</button><button class="segment" data-type="purchase" type="button">Add purchase</button></div>
+          <form id="movementForm">
+            <input id="movementType" type="hidden" value="sale">
+            <label>Model<select id="modelSelect" required></select></label>
+            <div class="form-row"><label>Size<select id="sizeSelect" required></select></label><label>Quantity<input id="quantityInput" type="number" min="1" step="1" value="1" required></label></div>
+            <label class="price-field"><span id="unitPriceLabel">Unit sale price (USD)</span><input id="unitPriceInput" type="number" min="0.01" step="0.01" placeholder="0.00" required></label>
+            <p class="stock-preview" id="stockPreview"></p><button class="primary-button" id="submitButton" type="submit">Record sale</button><p class="form-message" id="formMessage" role="status"></p>
+          </form>
+        </section>
+        <section class="panel history-panel"><div class="panel-heading"><div><p class="eyebrow">Recent activity</p><h2>Latest movements</h2></div><button class="text-button" id="refreshButton" type="button">Refresh</button></div><div id="historyList"></div></section>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="stockPanel" role="tabpanel" aria-labelledby="stockTab" hidden>
+      <section class="panel inventory-panel">
+        <div class="panel-heading inventory-heading"><div><p class="eyebrow">Current stock</p><h2>Inventory by reference</h2></div><label class="search"><span>⌕</span><input id="inventorySearch" type="search" placeholder="Search model or size" aria-label="Search inventory"></label></div>
+        <div class="table-wrap"><table><thead><tr><th>Model</th><th>Size</th><th>Available</th><th>Status</th></tr></thead><tbody id="inventoryBody"></tbody></table></div><p class="empty" id="inventoryEmpty" hidden>No references match your search.</p>
+      </section>
+    </section>
+  </main>
+  <dialog id="settingsDialog"><form method="dialog" class="dialog-card"><div class="dialog-heading"><div><p class="eyebrow">Shared database</p><h2>Connect Google Sheets</h2></div><button class="close-button" value="cancel" aria-label="Close">×</button></div><p class="dialog-copy">Paste the deployed Google Apps Script web app URL. See the setup guide in the project README.</p><label>Web app URL<input id="sheetUrlInput" type="url" placeholder="https://script.google.com/macros/s/…/exec"></label><p class="form-message" id="settingsMessage"></p><div class="dialog-actions"><button class="secondary-button" id="disconnectButton" type="button">Use local demo</button><button class="primary-button compact" id="saveSettingsButton" type="button">Connect</button></div></form></dialog>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
 </html>
