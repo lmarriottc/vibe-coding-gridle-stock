@@ -1,6 +1,8 @@
 # \# Girdle Sales and stock tracker
 
+\## Description
 
+This app will allow the sales people to register each sale which will update and show the stock level on real time
 
 \## Problem
 
@@ -28,6 +30,12 @@ Create a simple app that allows to register each sale in an easy way and shows t
 * No database required
 * No payment functionality
 * No advanced mobile design
+
+\## Technology
+
+* I will use HTML, CSS, JS y Vibe Coding
+
+
 
 
 
