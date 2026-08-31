@@ -26,6 +26,7 @@
     </nav>
 
     <section class="tab-panel" id="dashboardPanel" role="tabpanel" aria-labelledby="dashboardTab">
+      <div class="dashboard-actions"><button class="primary-button new-sale-button" id="newSaleButton" type="button">New Sale</button></div>
       <div class="metrics" aria-label="Sales and inventory summary">
         <article class="metric primary"><span>Available units</span><strong id="totalStock">0</strong><small id="referenceCount"></small></article>
         <article class="metric"><span>Sales today · quantity</span><strong id="todaySales">0</strong><small id="todayMovements"></small></article>
@@ -37,7 +38,7 @@
           <div class="dual-axis-chart"><span class="axis-title left">Units</span><div class="chart-plot" id="monthlySalesChart"></div><span class="axis-title right">USD</span></div>
         </section>
         <section class="panel chart-panel" aria-labelledby="sizeChartTitle">
-          <div class="chart-heading"><div><p class="eyebrow">Sales mix</p><h2 id="sizeChartTitle">Units sold and stock by size</h2></div><div class="chart-legend"><span><i class="legend-front"></i>Front</span><span><i class="legend-lateral"></i>Lateral</span><span><i class="legend-stock"></i>Stock</span></div></div>
+          <div class="chart-heading"><div><p class="eyebrow">Sales mix</p><h2 id="sizeChartTitle">Units sold and stock by size</h2></div><div class="chart-legend"><span><i class="legend-front"></i>Front</span><span><i class="legend-lateral"></i>Lateral</span><span><i class="legend-belt"></i>Belt</span><span><i class="legend-stock"></i>Stock</span></div></div>
           <div class="chart-plot" id="sizeSalesChart"></div>
         </section>
       </div>
@@ -50,10 +51,16 @@
           <div class="segmented" role="group" aria-label="Movement type"><button class="segment active" data-type="sale" type="button">Record sale</button><button class="segment" data-type="purchase" type="button">Add purchase</button></div>
           <form id="movementForm">
             <input id="movementType" type="hidden" value="sale">
-            <label>Model<select id="modelSelect" required></select></label>
-            <div class="form-row"><label>Size<select id="sizeSelect" required></select></label><label>Quantity<input id="quantityInput" type="number" min="1" step="1" value="1" required></label></div>
-            <label class="price-field"><span id="unitPriceLabel">Unit sale price (USD)</span><input id="unitPriceInput" type="number" min="0.01" step="0.01" placeholder="0.00" required></label>
-            <p class="stock-preview" id="stockPreview"></p><button class="primary-button" id="submitButton" type="submit">Record sale</button><p class="form-message" id="formMessage" role="status"></p>
+            <div id="movementItems">
+              <div class="movement-item">
+                <label>Model<select class="movement-model" id="modelSelect" required></select></label>
+                <div class="form-row"><label>Size<select class="movement-size" id="sizeSelect" required></select></label><label>Quantity<input class="movement-quantity" id="quantityInput" type="number" min="1" step="1" value="1" required></label></div>
+                <label class="price-field"><span class="movement-price-label" id="unitPriceLabel">Unit sale price (USD)</span><input class="movement-price" id="unitPriceInput" type="number" min="0.01" step="0.01" placeholder="0.00" required></label>
+                <p class="stock-preview" id="stockPreview"></p>
+              </div>
+            </div>
+            <button class="secondary-button add-movement-button" id="addMovementButton" type="button">+ Add another item</button>
+            <button class="primary-button" id="submitButton" type="submit">Record sale</button><p class="form-message" id="formMessage" role="status"></p>
           </form>
         </section>
         <section class="panel history-panel"><div class="panel-heading"><div><p class="eyebrow">Recent activity</p><h2>Latest movements</h2></div><button class="text-button" id="refreshButton" type="button">Refresh</button></div><div id="historyList"></div></section>
@@ -67,8 +74,16 @@
       </section>
     </section>
   </main>
+  <dialog id="saleDialog"><form id="saleForm" class="dialog-card">
+    <div class="dialog-heading"><div><p class="eyebrow">New sale</p><h2>Record sale</h2></div><button class="close-button" id="closeSaleButton" type="button" aria-label="Close">×</button></div>
+    <p class="dialog-copy">Record a sale and update inventory across the dashboard.</p>
+    <label>Model<select id="saleModelSelect" required></select></label>
+    <div class="form-row"><label>Size<select id="saleSizeSelect" required></select></label><label>Quantity<input id="saleQuantityInput" type="number" min="1" step="1" value="1" required></label></div>
+    <label class="price-field">Unit sale price (USD)<input id="saleUnitPriceInput" type="number" min="0.01" step="0.01" placeholder="0.00" required></label>
+    <p class="stock-preview" id="saleStockPreview"></p><button class="primary-button" id="saleSubmitButton" type="submit">Record sale</button><p class="form-message" id="saleFormMessage" role="status"></p>
+  </form></dialog>
   <dialog id="settingsDialog"><form method="dialog" class="dialog-card"><div class="dialog-heading"><div><p class="eyebrow">Shared database</p><h2>Connect Google Sheets</h2></div><button class="close-button" value="cancel" aria-label="Close">×</button></div><p class="dialog-copy">Paste the deployed Google Apps Script web app URL. See the setup guide in the project README.</p><label>Web app URL<input id="sheetUrlInput" type="url" placeholder="https://script.google.com/macros/s/…/exec"></label><p class="form-message" id="settingsMessage"></p><div class="dialog-actions"><button class="secondary-button" id="disconnectButton" type="button">Use local demo</button><button class="primary-button compact" id="saveSettingsButton" type="button">Connect</button></div></form></dialog>
   <div class="toast" id="toast" role="status"></div>
-  <script src="app.js"></script>
+  <script type="module" src="src/main.js"></script>
 </body>
 </html>
