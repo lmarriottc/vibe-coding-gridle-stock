@@ -30,7 +30,7 @@ function setupDatabase() {
   if (!inventory) inventory = spreadsheet.insertSheet(INVENTORY_SHEET);
   if (!movements) movements = spreadsheet.insertSheet(MOVEMENTS_SHEET);
   updateInventoryCatalog();
-  movements.clear().getRange(1, 1, 1, 10).setValues([['ID', 'Type', 'Model', 'Size', 'Quantity', 'Created At', 'Day', 'User', 'Unit Price', 'Total']]);
+  movements.clear().getRange(1, 1, 1, 11).setValues([['ID', 'Type', 'Model', 'Size', 'Quantity', 'Created At', 'Day', 'User', 'Unit Price', 'Total', 'Customer Name']]);
   inventory.setFrozenRows(1); movements.setFrozenRows(1);
 }
 
@@ -73,7 +73,7 @@ function readDatabase() {
   const movementRows = movementsSheet.getDataRange().getValues().slice(1).filter(row => row[0] !== '');
   return {
     inventory: inventoryRows.map(row => ({ id: row[0], model: row[1], size: row[2], stock: Number(row[3]) })),
-    history: movementRows.reverse().slice(0, 500).map(row => ({ id: row[0], type: row[1], model: row[2], size: row[3], quantity: Number(row[4]), createdAt: new Date(row[5]).toISOString(), day: row[6], unitPrice: Number(row[8]) || 0, total: Number(row[9]) || 0 }))
+    history: movementRows.reverse().slice(0, 500).map(row => ({ id: row[0], type: row[1], model: row[2], size: row[3], quantity: Number(row[4]), createdAt: new Date(row[5]).toISOString(), day: row[6], unitPrice: Number(row[8]) || 0, total: Number(row[9]) || 0, customerName: row[10] || '' }))
   };
 }
 
@@ -83,7 +83,9 @@ function recordMovement(payload) {
   try {
     const quantity = Number(payload.quantity);
     const unitPrice = Number(payload.unitPrice);
+    const customerName = String(payload.customerName || '').trim();
     if (!['sale', 'purchase'].includes(payload.type) || !Number.isInteger(quantity) || quantity < 1 || !Number.isFinite(unitPrice) || unitPrice <= 0) throw new Error('Invalid movement or unit price.');
+    if (payload.type === 'sale' && !customerName) throw new Error('Customer name is required for sales.');
     const spreadsheet = SpreadsheetApp.getActive();
     const inventory = spreadsheet.getSheetByName(INVENTORY_SHEET);
     const values = inventory.getDataRange().getValues();
@@ -95,12 +97,12 @@ function recordMovement(payload) {
     const now = new Date();
     const movements = spreadsheet.getSheetByName(MOVEMENTS_SHEET);
     ensureMovementSchema(movements);
-    movements.appendRow([Utilities.getUuid(), payload.type, payload.model, payload.size, quantity, now, Utilities.formatDate(now, Session.getScriptTimeZone(), 'yyyy-MM-dd'), Session.getActiveUser().getEmail(), unitPrice, quantity * unitPrice]);
+    movements.appendRow([Utilities.getUuid(), payload.type, payload.model, payload.size, quantity, now, Utilities.formatDate(now, Session.getScriptTimeZone(), 'yyyy-MM-dd'), Session.getActiveUser().getEmail(), unitPrice, quantity * unitPrice, customerName]);
   } finally { lock.releaseLock(); }
 }
 
 function ensureMovementSchema(sheet) {
-  sheet.getRange(1, 1, 1, 10).setValues([['ID', 'Type', 'Model', 'Size', 'Quantity', 'Created At', 'Day', 'User', 'Unit Price', 'Total']]);
+  sheet.getRange(1, 1, 1, 11).setValues([['ID', 'Type', 'Model', 'Size', 'Quantity', 'Created At', 'Day', 'User', 'Unit Price', 'Total', 'Customer Name']]);
   sheet.setFrozenRows(1);
 }
 

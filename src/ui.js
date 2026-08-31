@@ -105,7 +105,8 @@ export function render() {
     const purchase = item.type === "purchase";
     const date = new Intl.DateTimeFormat("en", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }).format(new Date(item.createdAt));
     const price = Number(item.unitPrice) > 0 ? ` · ${formatMoney(item.unitPrice)} each · ${formatMoney(item.total)} total` : "";
-    return `<article class="history-item"><span class="history-symbol ${purchase ? "purchase" : ""}">${purchase ? "+" : "−"}</span><div class="history-description"><strong>${purchase ? "Purchase received" : "Sale recorded"} · ${escapeHtml(item.model)} ${escapeHtml(item.size)}</strong><small>${date}${price}</small></div><span class="history-quantity ${purchase ? "purchase" : ""}">${purchase ? "+" : "−"}${item.quantity}</span></article>`;
+    const customer = !purchase && item.customerName ? ` · ${escapeHtml(item.customerName)}` : "";
+    return `<article class="history-item"><span class="history-symbol ${purchase ? "purchase" : ""}">${purchase ? "+" : "−"}</span><div class="history-description"><strong>${purchase ? "Purchase received" : "Sale recorded"}${customer} · ${escapeHtml(item.model)} ${escapeHtml(item.size)}</strong><small>${date}${price}</small></div><span class="history-quantity ${purchase ? "purchase" : ""}">${purchase ? "+" : "−"}${item.quantity}</span></article>`;
   }).join("") : '<p class="history-empty">No movements have been recorded yet.</p>';
   renderCharts();
   updateMovementPreview();
