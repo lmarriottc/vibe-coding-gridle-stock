@@ -4,7 +4,7 @@ FormaStock is a lightweight sales and inventory tracker for a shapewear distribu
 
 ## Features
 
-- Record sales and inventory purchases with their unit price and transaction total.
+- Record one or multiple sales or inventory purchases with their unit price and transaction total.
 - Update stock immediately and prevent sales above available stock.
 - Show daily sales, total units, and low-stock references.
 - Navigate between dedicated Dashboard, New Movements, and Current Stock tabs.
@@ -18,7 +18,17 @@ FormaStock is a lightweight sales and inventory tracker for a shapewear distribu
 
 ## Run the app
 
-Open `index.html` in a browser. No build or package installation is required.
+Serve the project directory with any local HTTP server, then open the displayed URL. For example:
+
+```powershell
+python -m http.server 8000
+```
+
+Open `http://localhost:8000`. No build or package installation is required; the HTTP server is needed because the JavaScript is organized as native ES modules.
+
+## JavaScript structure
+
+The browser entry point is `src/main.js`. Configuration, DOM references, state, Google Sheets access, rendering, form behavior, and shared utilities live in separate modules under `src/`.
 
 ## Connect a Google Sheet
 
@@ -32,7 +42,7 @@ Open `index.html` in a browser. No build or package installation is required.
 
 The web app URL is saved only in that browser. Inventory and movements are stored in the Sheet. Redeploy the Apps Script after changing `Code.gs`.
 
-If the Sheet was already configured before a catalog change, run `updateInventoryCatalog` from Apps Script. It updates the available models and sizes without deleting movement history.
+After redeploying Apps Script, new catalog references are added automatically the next time the app reads the Sheet. You can also run `updateInventoryCatalog` manually; it rebuilds the catalog while preserving stock for existing model/size combinations and does not delete movement history.
 
 ## Data model
 

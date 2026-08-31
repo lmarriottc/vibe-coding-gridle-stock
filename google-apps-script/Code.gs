@@ -1,5 +1,13 @@
 const INVENTORY_SHEET = 'Inventory';
 const MOVEMENTS_SHEET = 'Movements';
+const INVENTORY_REFERENCES = [
+  ['Front Closure', 'Medium'], ['Front Closure', 'Large'],
+  ['Front Closure', 'Extra Large'], ['Front Closure', '2XL'],
+  ['Lateral Closure', 'Medium'], ['Lateral Closure', 'Large'],
+  ['Lateral Closure', 'Extra Large'], ['Lateral Closure', '2XL'],
+  ['Belt', 'Medium'], ['Belt', 'Large'],
+  ['Belt', 'Extra Large'], ['Belt', '2XL']
+];
 
 function doGet() {
   try { return jsonResponse({ ok: true, ...readDatabase() }); }
@@ -38,15 +46,20 @@ function updateInventoryCatalog() {
       previousStock[`${row[1]}|${row[2]}`] = Number(row[3]) || 0;
     });
   }
-  const references = [
-    ['Front Closure', 'Medium'], ['Front Closure', 'Large'],
-    ['Front Closure', 'Extra Large'], ['Front Closure', '2XL'],
-    ['Lateral Closure', 'Medium'], ['Lateral Closure', 'Large'],
-    ['Lateral Closure', 'Extra Large'], ['Lateral Closure', '2XL']
-  ];
-  const rows = [['ID', 'Model', 'Size', 'Stock'], ...references.map((item, index) => [index + 1, item[0], item[1], previousStock[`${item[0]}|${item[1]}`] || 0])];
-  inventory.clear().getRange(1, 1, rows.length, 4).setValues(rows);
+  const catalogRows = [['ID', 'Model', 'Size', 'Stock'], ...INVENTORY_REFERENCES.map((item, index) => [index + 1, item[0], item[1], previousStock[`${item[0]}|${item[1]}`] || 0])];
+  inventory.clear().getRange(1, 1, catalogRows.length, 4).setValues(catalogRows);
   inventory.setFrozenRows(1);
+}
+
+// Adds new catalog references to existing Sheets without rewriting current rows.
+function ensureInventoryCatalog(inventory) {
+  const existingRows = inventory.getDataRange().getValues();
+  const existing = new Set(existingRows.slice(1).map(row => `${row[1]}|${row[2]}`));
+  let nextId = Math.max(0, ...existingRows.slice(1).map(row => Number(row[0]) || 0)) + 1;
+  const missing = INVENTORY_REFERENCES
+    .filter(item => !existing.has(`${item[0]}|${item[1]}`))
+    .map(item => [nextId++, item[0], item[1], 0]);
+  if (missing.length) inventory.getRange(inventory.getLastRow() + 1, 1, missing.length, 4).setValues(missing);
 }
 
 function readDatabase() {
@@ -54,6 +67,7 @@ function readDatabase() {
   const inventorySheet = spreadsheet.getSheetByName(INVENTORY_SHEET);
   const movementsSheet = spreadsheet.getSheetByName(MOVEMENTS_SHEET);
   if (!inventorySheet || !movementsSheet) throw new Error('Run setupDatabase() before connecting the app.');
+  ensureInventoryCatalog(inventorySheet);
   const inventoryRows = inventorySheet.getDataRange().getValues().slice(1).filter(row => row[0] !== '');
   ensureMovementSchema(movementsSheet);
   const movementRows = movementsSheet.getDataRange().getValues().slice(1).filter(row => row[0] !== '');
