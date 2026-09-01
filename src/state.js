@@ -2,7 +2,8 @@ import { demoInventory, SETTINGS_KEY } from "./config.js";
 
 export const state = {
   inventory: structuredClone(demoInventory),
-  history: []
+  history: [],
+  salesBySizeModel: null
 };
 
 let sheetUrl = localStorage.getItem(SETTINGS_KEY) || "";
@@ -10,6 +11,7 @@ let sheetUrl = localStorage.getItem(SETTINGS_KEY) || "";
 export function replaceState(data) {
   state.inventory = data.inventory;
   state.history = data.history || [];
+  state.salesBySizeModel = Array.isArray(data.salesBySizeModel) ? data.salesBySizeModel : null;
 }
 
 export function resetDemoState() {

@@ -62,18 +62,91 @@ function ensureInventoryCatalog(inventory) {
   if (missing.length) inventory.getRange(inventory.getLastRow() + 1, 1, missing.length, 4).setValues(missing);
 }
 
+function normalizeModel(value) {
+  const model = String(value || '').trim().toLowerCase();
+  if (!model) return 'Unassigned';
+  if (model.includes('front') || model.includes('frontal')) return 'Front Closure';
+  if (model.includes('lateral') || model.includes('side')) return 'Lateral Closure';
+  if (model.includes('belt') || model.includes('faja')) return 'Belt';
+  return String(value || '').trim();
+}
+
+function normalizeSize(value) {
+  const size = String(value || '').trim().toLowerCase().replace(/[\s-]/g, '');
+  if (!size) return 'Unassigned';
+  if (['m', 'medium', 'mediana', 'mediano'].includes(size)) return 'Medium';
+  if (['l', 'large', 'grande'].includes(size)) return 'Large';
+  if (['xl', 'extralarge'].includes(size)) return 'Extra Large';
+  if (['2xl', 'xxl', '2extralarge'].includes(size)) return '2XL';
+  return String(value || '').trim();
+}
+
+function normalizeDay(value, fallbackDate) {
+  const timezone = Session.getScriptTimeZone();
+  if (value instanceof Date && !isNaN(value.getTime())) {
+    return Utilities.formatDate(value, timezone, 'yyyy-MM-dd');
+  }
+  const text = String(value || '').trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(text)) return text;
+  const parsed = new Date(text);
+  if (!isNaN(parsed.getTime())) return Utilities.formatDate(parsed, timezone, 'yyyy-MM-dd');
+  const fallback = new Date(fallbackDate);
+  return isNaN(fallback.getTime()) ? '' : Utilities.formatDate(fallback, timezone, 'yyyy-MM-dd');
+}
+
 function readDatabase() {
   const spreadsheet = SpreadsheetApp.getActive();
   const inventorySheet = spreadsheet.getSheetByName(INVENTORY_SHEET);
   const movementsSheet = spreadsheet.getSheetByName(MOVEMENTS_SHEET);
   if (!inventorySheet || !movementsSheet) throw new Error('Run setupDatabase() before connecting the app.');
+
   ensureInventoryCatalog(inventorySheet);
-  const inventoryRows = inventorySheet.getDataRange().getValues().slice(1).filter(row => row[0] !== '');
   ensureMovementSchema(movementsSheet);
-  const movementRows = movementsSheet.getDataRange().getValues().slice(1).filter(row => row[0] !== '');
+
+  const inventoryValues = inventorySheet.getDataRange().getValues().slice(1);
+  const movementValues = movementsSheet.getDataRange().getValues().slice(1);
+  const inventoryRows = inventoryValues.filter(function(row) { return row[0] !== ''; });
+  const movementRows = movementValues.filter(function(row) { return row[0] !== ''; });
+  const salesTotals = {};
+
+  movementRows.forEach(function(row) {
+    if (String(row[1] || '').trim().toLowerCase() !== 'sale') return;
+    const salesGroupKey = normalizeModel(row[2]) + '|||' + normalizeSize(row[3]);
+    salesTotals[salesGroupKey] = (salesTotals[salesGroupKey] || 0) + (Number(row[4]) || 0);
+  });
+
+  const salesBySizeModel = Object.keys(salesTotals).map(function(totalKey) {
+    const parts = totalKey.split('|||');
+    return {
+      model: parts[0],
+      size: parts[1],
+      quantity: salesTotals[totalKey]
+    };
+  });
+
+  const inventory = inventoryRows.map(function(row) {
+    return { id: row[0], model: row[1], size: row[2], stock: Number(row[3]) };
+  });
+  const orderedRows = movementRows.slice().reverse();
+  const history = orderedRows.map(function(row) {
+    return {
+      id: row[0],
+      type: String(row[1] || '').trim().toLowerCase(),
+      model: normalizeModel(row[2]),
+      size: normalizeSize(row[3]),
+      quantity: Number(row[4]),
+      createdAt: new Date(row[5]).toISOString(),
+      day: normalizeDay(row[6], row[5]),
+      unitPrice: Number(row[8]) || 0,
+      total: Number(row[9]) || 0,
+      customerName: row[10] || ''
+    };
+  });
+
   return {
-    inventory: inventoryRows.map(row => ({ id: row[0], model: row[1], size: row[2], stock: Number(row[3]) })),
-    history: movementRows.reverse().slice(0, 500).map(row => ({ id: row[0], type: row[1], model: row[2], size: row[3], quantity: Number(row[4]), createdAt: new Date(row[5]).toISOString(), day: row[6], unitPrice: Number(row[8]) || 0, total: Number(row[9]) || 0, customerName: row[10] || '' }))
+    inventory: inventory,
+    history: history,
+    salesBySizeModel: salesBySizeModel
   };
 }
 
