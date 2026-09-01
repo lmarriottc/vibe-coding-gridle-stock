@@ -1,8 +1,8 @@
 export const $ = (selector) => document.querySelector(selector);
 
 export const elements = {
-  total: $("#totalStock"), refs: $("#referenceCount"), sales: $("#todaySales"),
-  salesAmount: $("#todaySalesAmount"), movements: $("#todayMovements"),
+  total: $("#totalStock"), refs: $("#referenceCount"),
+  monthSales: $("#monthSales"), monthSalesAmount: $("#monthSalesAmount"),
   monthlyChart: $("#monthlySalesChart"), sizeChart: $("#sizeSalesChart"),
   body: $("#inventoryBody"), empty: $("#inventoryEmpty"), history: $("#historyList"),
   form: $("#movementForm"), type: $("#movementType"), model: $("#modelSelect"),

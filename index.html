@@ -29,8 +29,8 @@
       <div class="dashboard-actions"><button class="primary-button new-sale-button" id="newSaleButton" type="button">New Sale</button></div>
       <div class="metrics" aria-label="Sales and inventory summary">
         <article class="metric primary"><span>Available units</span><strong id="totalStock">0</strong><small id="referenceCount"></small></article>
-        <article class="metric"><span>Sales today · quantity</span><strong id="todaySales">0</strong><small id="todayMovements"></small></article>
-        <article class="metric"><span>Sales today · dollars</span><strong id="todaySalesAmount">$0.00</strong><small>Gross sales value</small></article>
+        <article class="metric"><span>Sales this month · units</span><strong id="monthSales">0</strong><small>Units sold this calendar month</small></article>
+        <article class="metric"><span>Sales this month · dollars</span><strong id="monthSalesAmount">$0.00</strong><small>Gross monthly sales value</small></article>
       </div>
       <div class="charts-grid">
         <section class="panel chart-panel" aria-labelledby="monthlyChartTitle">
@@ -38,7 +38,7 @@
           <div class="dual-axis-chart"><span class="axis-title left">Units</span><div class="chart-plot" id="monthlySalesChart"></div><span class="axis-title right">USD</span></div>
         </section>
         <section class="panel chart-panel" aria-labelledby="sizeChartTitle">
-          <div class="chart-heading"><div><p class="eyebrow">Sales mix</p><h2 id="sizeChartTitle">Units sold and stock by size</h2></div><div class="chart-legend"><span><i class="legend-front"></i>Front</span><span><i class="legend-lateral"></i>Lateral</span><span><i class="legend-belt"></i>Belt</span><span><i class="legend-stock"></i>Stock</span></div></div>
+          <div class="chart-heading"><div><p class="eyebrow">Sales mix</p><h2 id="sizeChartTitle">Units sold and stock by size</h2></div><div class="chart-legend"><span><i class="legend-front"></i>Front</span><span><i class="legend-lateral"></i>Lateral</span><span><i class="legend-belt"></i>Belt</span><span><i class="legend-other"></i>Other</span><span><i class="legend-stock"></i>Stock</span></div></div>
           <div class="chart-plot" id="sizeSalesChart"></div>
         </section>
       </div>
