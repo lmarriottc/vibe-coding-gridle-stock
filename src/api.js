@@ -1,6 +1,6 @@
-import { getSheetUrl, replaceState, resetDemoState, state } from "./state.js";
-import { localDay } from "./utils.js";
-import { populateForms, render, setSyncStatus, showToast } from "./ui.js";
+import { getSheetUrl, replaceState, resetDemoState, state } from "./state.js?v=5";
+import { localDay } from "./utils.js?v=5";
+import { populateForms, render, setSyncStatus, showToast } from "./ui.js?v=5";
 
 let activeLoad = null;
 

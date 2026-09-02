@@ -1,8 +1,8 @@
-import { loadData } from "./api.js";
-import { $, elements as el } from "./dom.js";
-import { initializeForms } from "./forms.js";
-import { clearSheetUrl, getSheetUrl, saveSheetUrl } from "./state.js";
-import { render, showToast } from "./ui.js";
+import { loadData } from "./api.js?v=5";
+import { $, elements as el } from "./dom.js?v=5";
+import { initializeForms } from "./forms.js?v=5";
+import { clearSheetUrl, getSheetUrl, saveSheetUrl } from "./state.js?v=5";
+import { render, showToast } from "./ui.js?v=5";
 
 function initializeTabs() {
   const tabs = [...document.querySelectorAll(".tab")];

@@ -1,7 +1,7 @@
-import { LOW_STOCK_LIMIT } from "./config.js";
-import { elements as el } from "./dom.js";
-import { state } from "./state.js";
-import { escapeHtml, formatMoney } from "./utils.js";
+import { LOW_STOCK_LIMIT } from "./config.js?v=5";
+import { elements as el } from "./dom.js?v=5";
+import { state } from "./state.js?v=5";
+import { escapeHtml, formatMoney } from "./utils.js?v=5";
 
 export function setSyncStatus(mode, text) {
   el.sync.className = `sync-status ${mode}`;
@@ -139,7 +139,8 @@ export function render() {
     const purchase = item.type === "purchase";
     const date = new Intl.DateTimeFormat("en", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }).format(new Date(item.createdAt));
     const price = Number(item.unitPrice) > 0 ? ` · ${formatMoney(item.unitPrice)} each · ${formatMoney(item.total)} total` : "";
-    const customer = !purchase && item.customerName ? ` · ${escapeHtml(item.customerName)}` : "";
+    const customerType = !purchase && item.customerType ? ` (${escapeHtml(item.customerType)})` : "";
+    const customer = !purchase && item.customerName ? ` · ${escapeHtml(item.customerName)}${customerType}` : "";
     return `<article class="history-item"><span class="history-symbol ${purchase ? "purchase" : ""}">${purchase ? "+" : "−"}</span><div class="history-description"><strong>${purchase ? "Purchase received" : "Sale recorded"}${customer} · ${escapeHtml(item.model)} ${escapeHtml(item.size)}</strong><small>${date}${price}</small></div><span class="history-quantity ${purchase ? "purchase" : ""}">${purchase ? "+" : "−"}${item.quantity}</span></article>`;
   }).join("") : '<p class="history-empty">No movements have been recorded yet.</p>';
   renderCharts();

@@ -5,6 +5,7 @@ FormaStock is a lightweight sales and inventory tracker for a shapewear distribu
 ## Features
 
 - Record one or multiple sales or inventory purchases with their unit price and transaction total.
+- Require a customer name and customer type (`Maribi` or `Otro`) for every sale.
 - Update stock immediately and prevent sales above available stock.
 - Show daily sales, total units, and low-stock references.
 - Navigate between dedicated Dashboard, New Movements, and Current Stock tabs.
@@ -46,7 +47,7 @@ After redeploying Apps Script, new catalog references are added automatically th
 
 ## Data model
 
-The `Inventory` tab stores ID, model, size, and stock. The `Movements` tab is an append-only log containing the movement type, reference, quantity, time, Google account when available, unit price, and transaction total. Monetary values currently use USD. A document lock prevents simultaneous sales from corrupting stock counts.
+The `Inventory` tab stores ID, model, size, and stock. The `Movements` tab is an append-only log containing the movement type, reference, quantity, time, Google account when available, unit price, transaction total, customer name, and customer type. Monetary values currently use USD. A document lock prevents simultaneous sales from corrupting stock counts.
 
 ## Current scope
 
