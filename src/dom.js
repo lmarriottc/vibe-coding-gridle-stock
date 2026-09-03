@@ -17,5 +17,9 @@ export const elements = {
   salePreview: $("#saleStockPreview"), saleSubmit: $("#saleSubmitButton"),
   saleMessage: $("#saleFormMessage"), search: $("#inventorySearch"), sync: $("#syncStatus"),
   settingsDialog: $("#settingsDialog"), url: $("#sheetUrlInput"),
-  settingsMessage: $("#settingsMessage"), toast: $("#toast")
+  settingsMessage: $("#settingsMessage"), toast: $("#toast"),
+  reportForm: $("#salesReportForm"), reportStart: $("#reportStartDate"), reportEnd: $("#reportEndDate"),
+  reportCustomerType: $("#reportCustomerType"), reportBody: $("#salesReportBody"),
+  reportEmpty: $("#salesReportEmpty"), reportMessage: $("#reportMessage"),
+  reportCount: $("#reportResultCount"), reportTotal: $("#reportTotal"), reportDownload: $("#downloadSalesReport")
 };

@@ -1,16 +1,20 @@
-import { loadData } from "./api.js?v=5";
-import { $, elements as el } from "./dom.js?v=5";
-import { initializeForms } from "./forms.js?v=5";
-import { clearSheetUrl, getSheetUrl, saveSheetUrl } from "./state.js?v=5";
-import { render, showToast } from "./ui.js?v=5";
+import { loadData } from "./api.js?v=6";
+import { $, elements as el } from "./dom.js?v=6";
+import { initializeForms } from "./forms.js?v=6";
+import { initializeReports, renderSalesReport } from "./reports.js?v=6";
+import { clearSheetUrl, getSheetUrl, saveSheetUrl } from "./state.js?v=6";
+import { render, showToast } from "./ui.js?v=6";
 
 function initializeTabs() {
   const tabs = [...document.querySelectorAll(".tab")];
-  const activateTab = (tab) => tabs.forEach((item) => {
-    const active = item === tab;
-    item.classList.toggle("active", active); item.setAttribute("aria-selected", String(active));
-    $(`#${item.dataset.panel}`).hidden = !active;
-  });
+  const activateTab = (tab) => {
+    tabs.forEach((item) => {
+      const active = item === tab;
+      item.classList.toggle("active", active); item.setAttribute("aria-selected", String(active));
+      $(`#${item.dataset.panel}`).hidden = !active;
+    });
+    if (tab.dataset.panel === "reportsPanel") renderSalesReport();
+  };
   tabs.forEach((tab, index) => {
     tab.addEventListener("click", () => activateTab(tab));
     tab.addEventListener("keydown", (event) => {
@@ -47,8 +51,9 @@ function initializeLiveSync() {
 
 initializeTabs();
 initializeForms();
+initializeReports();
 initializeSettings();
 initializeLiveSync();
 el.search.addEventListener("input", render);
 $("#currentDate").textContent = new Intl.DateTimeFormat("en", { weekday: "long", month: "long", day: "numeric" }).format(new Date());
-loadData();
+loadData().then(() => renderSalesReport());

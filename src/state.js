@@ -1,4 +1,4 @@
-import { demoInventory, SETTINGS_KEY } from "./config.js?v=5";
+import { demoInventory, SETTINGS_KEY } from "./config.js?v=6";
 
 export const state = {
   inventory: structuredClone(demoInventory),

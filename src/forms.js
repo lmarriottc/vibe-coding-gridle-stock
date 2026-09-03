@@ -1,8 +1,8 @@
-import { recordMovement, loadData } from "./api.js?v=5";
-import { $, elements as el } from "./dom.js?v=5";
-import { getSheetUrl, state } from "./state.js?v=5";
-import { escapeHtml } from "./utils.js?v=5";
-import { populateForms, populateMovementSizes, populateSaleModels, populateSaleSizes, render, showToast, updateMovementPreview, updateSalePreview } from "./ui.js?v=5";
+import { recordMovement, loadData } from "./api.js?v=6";
+import { $, elements as el } from "./dom.js?v=6";
+import { getSheetUrl, state } from "./state.js?v=6";
+import { escapeHtml } from "./utils.js?v=6";
+import { populateForms, populateMovementSizes, populateSaleModels, populateSaleSizes, render, showToast, updateMovementPreview, updateSalePreview } from "./ui.js?v=6";
 
 const CUSTOMER_TYPES = ["Maribi", "Otro"];
 

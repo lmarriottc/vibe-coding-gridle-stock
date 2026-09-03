@@ -1,7 +1,7 @@
-import { LOW_STOCK_LIMIT } from "./config.js?v=5";
-import { elements as el } from "./dom.js?v=5";
-import { state } from "./state.js?v=5";
-import { escapeHtml, formatMoney } from "./utils.js?v=5";
+import { LOW_STOCK_LIMIT } from "./config.js?v=6";
+import { elements as el } from "./dom.js?v=6";
+import { state } from "./state.js?v=6";
+import { escapeHtml, formatMoney } from "./utils.js?v=6";
 
 export function setSyncStatus(mode, text) {
   el.sync.className = `sync-status ${mode}`;

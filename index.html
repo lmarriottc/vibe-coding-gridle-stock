@@ -23,6 +23,7 @@
       <button class="tab active" id="dashboardTab" role="tab" aria-selected="true" aria-controls="dashboardPanel" data-panel="dashboardPanel" type="button">Dashboard</button>
       <button class="tab" id="movementsTab" role="tab" aria-selected="false" aria-controls="movementsPanel" data-panel="movementsPanel" type="button">New Movements</button>
       <button class="tab" id="stockTab" role="tab" aria-selected="false" aria-controls="stockPanel" data-panel="stockPanel" type="button">Current Stock</button>
+      <button class="tab" id="reportsTab" role="tab" aria-selected="false" aria-controls="reportsPanel" data-panel="reportsPanel" type="button">Reports</button>
     </nav>
 
     <section class="tab-panel" id="dashboardPanel" role="tabpanel" aria-labelledby="dashboardTab">
@@ -78,6 +79,26 @@
         <div class="table-wrap"><table><thead><tr><th>Model</th><th>Size</th><th>Available</th><th>Status</th></tr></thead><tbody id="inventoryBody"></tbody></table></div><p class="empty" id="inventoryEmpty" hidden>No references match your search.</p>
       </section>
     </section>
+
+    <section class="tab-panel" id="reportsPanel" role="tabpanel" aria-labelledby="reportsTab" hidden>
+      <section class="panel reports-panel">
+        <div class="panel-heading"><div><p class="eyebrow">Sales reports</p><h2>Sales report</h2></div></div>
+        <form class="report-filters" id="salesReportForm">
+          <label>Start date<input id="reportStartDate" type="date" required></label>
+          <label>End date<input id="reportEndDate" type="date" required></label>
+          <label>Customer type<select id="reportCustomerType"><option value="">All customer types</option><option value="Maribi">Maribi</option><option value="Otro">Otro</option></select></label>
+          <button class="primary-button report-generate-button" type="submit">Generate report</button>
+        </form>
+        <p class="form-message report-message" id="reportMessage" role="status"></p>
+        <div class="report-summary">
+          <span id="reportResultCount">0 sales</span>
+          <strong id="reportTotal">$0.00</strong>
+          <button class="secondary-button report-download-button" id="downloadSalesReport" type="button" disabled>Download Excel</button>
+        </div>
+        <div class="table-wrap report-table-wrap"><table class="report-table"><thead><tr><th>Date</th><th>Customer type</th><th>Customer name</th><th>Model</th><th>Size</th><th>Quantity</th><th>Total sale</th></tr></thead><tbody id="salesReportBody"></tbody></table></div>
+        <p class="empty" id="salesReportEmpty">Generate a report to view sales.</p>
+      </section>
+    </section>
   </main>
   <dialog id="saleDialog"><form id="saleForm" class="dialog-card">
     <div class="dialog-heading"><div><p class="eyebrow">New sale</p><h2>Record sale</h2></div><button class="close-button" id="closeSaleButton" type="button" aria-label="Close">×</button></div>
@@ -91,6 +112,6 @@
   </form></dialog>
   <dialog id="settingsDialog"><form method="dialog" class="dialog-card"><div class="dialog-heading"><div><p class="eyebrow">Shared database</p><h2>Connect Google Sheets</h2></div><button class="close-button" value="cancel" aria-label="Close">×</button></div><p class="dialog-copy">Paste the deployed Google Apps Script web app URL. See the setup guide in the project README.</p><label>Web app URL<input id="sheetUrlInput" type="url" placeholder="https://script.google.com/macros/s/…/exec"></label><p class="form-message" id="settingsMessage"></p><div class="dialog-actions"><button class="secondary-button" id="disconnectButton" type="button">Use local demo</button><button class="primary-button compact" id="saveSettingsButton" type="button">Connect</button></div></form></dialog>
   <div class="toast" id="toast" role="status"></div>
-  <script type="module" src="src/main.js?v=5"></script>
+  <script type="module" src="src/main.js?v=6"></script>
 </body>
 </html>

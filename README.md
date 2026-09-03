@@ -13,6 +13,7 @@ FormaStock is a lightweight sales and inventory tracker for a shapewear distribu
 - Visualize six-month sales trends with independent unit and dollar scales.
 - Compare unit sales by size and model against current stock levels.
 - Search inventory by model or size.
+- Filter sales reports by date range and customer type, then download the results as an Excel file.
 - Keep a shared movement history in Google Sheets.
 - Fall back to local demo data when no Sheet is connected.
 - Responsive English interface for desktop and mobile.
