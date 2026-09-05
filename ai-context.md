@@ -31,7 +31,7 @@ The user interface is written in English. Monetary values use USD. The app has n
 - `src/reports.js`: sales filtering, report table, totals, and Excel `.xls` download.
 - `src/utils.js`: date, money, and HTML-escaping utilities.
 - `google-apps-script/Code.gs`: Google Sheets schema, API endpoints, validation, inventory updates, and movement persistence.
-- `docs/scope.md`: concise product scope.
+- `docs/alcance.md`: concise product scope.
 
 ## Main application sections
 

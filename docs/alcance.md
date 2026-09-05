@@ -1,4 +1,4 @@
-# FormaStock scope
+# Alcance de FormaStock
 
 ## Included
 
